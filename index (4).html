@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tesla Delivery Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #1a1a1a;
+    --bg4: #222222;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #f0f0f0;
+    --text2: #999;
+    --text3: #666;
+    --red: #e82127;
+    --red-dim: rgba(232,33,39,0.15);
+    --green: #3fc380;
+    --green-dim: rgba(63,195,128,0.12);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --blue: #4a9eff;
+    --blue-dim: rgba(74,158,255,0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+  }
+  .tesla-logo {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .header-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    flex: 1;
+  }
+  .header-title span { color: var(--red); }
+  .progress-pill {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .progress-pill .count { color: var(--green); }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px 12px;
+  }
+  .progress-bar-inner { max-width: 800px; margin: 0 auto; }
+  .progress-track {
+    height: 3px;
+    background: var(--bg4);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--amber));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 6px;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 20px 0;
+  }
+  .hero-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .model-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .model-btn:hover { border-color: var(--red); color: var(--text); }
+  .model-btn.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+  }
+
+  /* GOLDEN RULE */
+  .golden-rule {
+    max-width: 800px;
+    margin: 16px auto;
+    padding: 0 20px;
+  }
+  .golden-rule-box {
+    background: var(--amber-dim);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .golden-rule-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .golden-rule-text {
+    font-size: 13px;
+    color: var(--amber);
+    line-height: 1.5;
+  }
+  .golden-rule-text strong { font-weight: 600; }
+
+  /* MAIN CONTENT */
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 12px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .section:has(.section-body.open) { border-color: var(--border2); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .section-header:hover { background: rgba(255,255,255,0.02); }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+
+  .section-info { flex: 1; min-width: 0; }
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  .section-subtitle {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 1px;
+  }
+  .section-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .section-progress-ring {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .ring-bg { stroke: var(--bg4); }
+  .ring-fill { stroke: var(--green); transition: stroke-dashoffset 0.4s ease; }
+  .ring-text {
+    font-size: 9px;
+    font-weight: 600;
+    fill: var(--text);
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  .chevron {
+    width: 16px;
+    height: 16px;
+    color: var(--text3);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .section-body.open ~ .section-header .chevron { transform: rotate(180deg); }
+  .section-header.open .chevron { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .section-body.open { display: block; }
+
+  /* ITEMS */
+  .item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .item:last-child { border-bottom: none; }
+  .item:hover { background: rgba(255,255,255,0.02); }
+  .item.checked { background: rgba(63,195,128,0.04); }
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.2s;
+    background: transparent;
+  }
+  .item.checked .checkbox {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .checkmark {
+    display: none;
+    width: 11px;
+    height: 11px;
+  }
+  .item.checked .checkmark { display: block; }
+
+  .item-content { flex: 1; min-width: 0; }
+  .item-text {
+    font-size: 14px;
+    line-height: 1.5;
+    transition: color 0.2s;
+  }
+  .item.checked .item-text {
+    color: var(--text3);
+    text-decoration: line-through;
+    text-decoration-color: var(--text3);
+  }
+  .item-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag-important { background: var(--red-dim); color: var(--red); }
+  .tag-tip { background: var(--blue-dim); color: var(--blue); }
+  .tag-model { background: var(--amber-dim); color: var(--amber); }
+
+  .item-note {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* NOTES AREA */
+  .notes-area {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .notes-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  textarea {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 10px 12px;
+    resize: vertical;
+    min-height: 70px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--border2); }
+  textarea::placeholder { color: var(--text3); }
+
+  /* SUMMARY FOOTER */
+  .summary-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 16px;
+  }
+  .summary-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: var(--text2);
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .summary-stat {
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+  }
+  .summary-stat .num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  .summary-stat .lbl {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .num-green { color: var(--green); }
+  .num-amber { color: var(--amber); }
+  .num-red { color: var(--red); }
+
+  .action-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #cc1c21; }
+  .btn-secondary {
+    background: var(--bg3);
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+  .btn-secondary:hover { background: var(--bg4); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--text);
+    transition: transform 0.3s ease;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* SCROLL TO TOP */
+  .scroll-top {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 50;
+  }
+  .scroll-top.visible { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 500px) {
+    .header-title { font-size: 15px; }
+    .item-text { font-size: 13px; }
+    .section-header { padding: 14px 14px; }
+    .item { padding: 11px 14px; }
+    .action-btns { flex-direction: column; }
+    .btn { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <svg class="tesla-logo" viewBox="0 0 342 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 68.98C56.5 26.47 130.4 0 171 0s114.5 26.47 171 68.98c-34.38 7.5-72.38 11.52-114.5 11.52L171 512 114.5 80.5C72.38 80.5 34.38 76.48 0 68.98zm171 2.04c-27.13 0-53.63-2.04-78.5-5.97 23.25-14.3 50.25-22.6 78.5-22.6s55.25 8.3 78.5 22.6c-24.87 3.93-51.37 5.97-78.5 5.97z" fill="#e82127"/>
+    </svg>
+    <div class="header-title">Checklist de Entrega <span>Tesla</span></div>
+    <div class="progress-pill" id="header-count"><span class="count">0</span> / <span id="total-count">0</span></div>
+  </div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-inner">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-labels">
+      <span id="pct-label">0% completado</span>
+      <span id="remaining-label"></span>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner" id="model-selector">
+    <button class="model-btn active" data-model="all">Todos los modelos</button>
+    <button class="model-btn" data-model="M3">Model 3</button>
+    <button class="model-btn" data-model="MY">Model Y</button>
+    <button class="model-btn" data-model="MS">Model S</button>
+    <button class="model-btn" data-model="MX">Model X</button>
+  </div>
+</div>
+
+<div class="golden-rule">
+  <div class="golden-rule-box">
+    <div class="golden-rule-icon">⚠️</div>
+    <div class="golden-rule-text">
+      <strong>Regla de oro:</strong> No aceptes el coche en la App hasta haber completado toda la inspección exterior e interior. Una vez aceptado, es mucho más difícil reclamar defectos cosméticos.
+    </div>
+  </div>
+</div>
+
+<main id="main-content"></main>
+
+<div class="toast" id="toast"></div>
+<button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">
+  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script>
+const SECTIONS = [
+  {
+    id: 'general',
+    icon: '📋',
+    color: '#4a9eff',
+    title: 'General',
+    subtitle: 'Preparación antes de la entrega',
+    items: [
+      { text: 'Llevar una linterna LED potente para revisar pintura', note: 'Ilumina en ángulo rasante para detectar remolinos y arañazos.' },
+      { text: 'Llevar a un acompañante para una segunda opinión objetiva' },
+      { text: 'Comprobar que el número de bastidor VIN del coche coincide con el asignado' },
+      { text: 'Comprobar que la matrícula asignada se corresponde con la del coche' },
+      { text: 'Confirmar cómo comunicar problemas durante la entrega al TA (Asesor de Entrega)' },
+      { text: 'Confirmar cómo comunicar problemas detectados después de la entrega' },
+      { text: 'Documentar todos los defectos con fotos antes de firmar nada', tag: 'important' },
+      { text: 'Comprobar estado de carga de la batería' },
+      { text: 'Verificar entrega de 2 tarjetas llave físicas' },
+    ]
+  },
+  {
+    id: 'exterior',
+    icon: '🚗',
+    color: '#e82127',
+    title: 'Exterior',
+    subtitle: 'Carrocería, pintura y cristales',
+    items: [
+      { text: 'Alineación del maletero y capó (simétrica desde todos los ángulos)', note: 'Sentarse dentro del coche para comprobar la alineación del capó.' },
+      { text: 'Alineación de puertas — abren y cierran correctamente, cristal baja y sube al abrir' },
+      { text: 'Alineación de paneles (gaps uniformes entre todas las piezas)' },
+      { text: 'Revisar pintura: remolinos, arañazos y puntos de polvo bajo la laca', tag: 'important', note: 'Usar linterna en ángulo rasante. Revisar bajo luz artificial directa.' },
+      { text: 'Verificar que todos los paneles tienen el mismo tono de pintura' },
+      { text: 'Revisar zonas interiores al abrir puertas (algunos coches llegaron sin pintar)' },
+      { text: 'Posibles arañazos en todos los cristales, incluido techo solar' },
+      { text: 'Posibles arañazos en tapacubos y llantas (curb rash de transporte)' },
+      { text: 'Comprobar restos de adhesivo de protecciones en tiradores y marcos de ventanas' },
+      { text: 'Verificar que la medida de los neumáticos coincide con la ficha técnica' },
+      { text: 'Revisar posible deformidad del neumático por baja presión durante el viaje en barco', note: 'También comprobar posibles hernias (abultamientos) en el perfil del neumático.' },
+      { text: 'Ópticas: comprobar que faros delanteros y traseros están bien enrasados y sin condensación' },
+      { text: 'Revisar que llantas no tengan roces de transporte (curb rash)', tag: 'tip', note: 'Especialmente frecuente en el transporte por barco desde la fábrica.' },
+    ]
+  },
+  {
+    id: 'interior',
+    icon: '🪑',
+    color: '#f5a623',
+    title: 'Interior',
+    subtitle: 'Tapizados, consola y acabados',
+    items: [
+      { text: 'Arañazos o marcas en asientos delanteros' },
+      { text: 'Arañazos o marcas en asientos traseros' },
+      { text: 'Arañazos en consola central' },
+      { text: 'Arañazos o deformidades en volante' },
+      { text: 'Arañazos en pantalla central' },
+      { text: 'Dobleces y arrugas en tapizado interior' },
+      { text: 'Limpieza de tapizados, parasoles, asientos y volante' },
+      { text: 'Ajuste de molduras: presionar salpicadero y puertas para detectar crujidos' },
+      { text: 'Cajones y consola: comprobar que tapas abren y cierran suavemente', note: 'Aquí irán los organizadores.' },
+      { text: 'Techo interior (alcántara/tejido) libre de huellas de operarios' },
+      { text: 'Tapicería: revisar costuras y que no haya marcas en asientos de cuero sintético' },
+    ]
+  },
+  {
+    id: 'electronica',
+    icon: '⚡',
+    color: '#3fc380',
+    title: 'Electrónica y Software',
+    subtitle: 'Pantallas, cámaras y conectividad',
+    items: [
+      { text: 'Pantalla central y trasera: sin píxeles muertos ni manchas de presión' },
+      { text: 'Cámaras (Hardware 4): comprobar que todas se ven nítidas en pantalla', note: 'Verificar las 8 cámaras: frontal, laterales, trasera y pilares.' },
+      { text: 'Comprobar alineación de la luz ambiental del salpicadero con las puertas delanteras', tag: 'model', note: 'Varía según modelo.' },
+      { text: 'Audio: subir volumen y verificar que todos los altavoces funcionan (Premium Audio)', tag: 'model' },
+      { text: 'Carga inalámbrica: probar ambos cargadores de móvil' },
+      { text: 'Puertos USB: verificar los 2 puertos delanteros y los 2 traseros' },
+      { text: 'Conectividad: emparejar teléfono y verificar apertura por Bluetooth (teléfono-llave)' },
+      { text: 'Vincular el móvil con el coche y comprobar el funcionamiento del teléfono-llave' },
+      { text: 'Comprobar que ambas tarjetas llave funcionan correctamente' },
+    ]
+  },
+  {
+    id: 'funcional',
+    icon: '🔧',
+    color: '#b57bee',
+    title: 'Funcional y Mecánico',
+    subtitle: 'Luces, puertas, asientos y más',
+    items: [
+      { text: 'Luces diurnas, cruce, largas e intermitentes (delanteros y traseros)' },
+      { text: 'Luces: antiniebla (si lleva), matrícula, marcha atrás, posición traseras, freno, interiores techo, cortesía', note: 'También espejos de cortesía en parasoles.' },
+      { text: 'Los 4 elevalunas bajan y suben sin hacer ruido', note: 'Ojo: los traseros solo bajan 2/3 del total.' },
+      { text: 'Todas las puertas abren desde el interior accionando el pulsador' },
+      { text: 'Correcto funcionamiento de los 5 cinturones de seguridad' },
+      { text: 'Comprobar sonido de marcha atrás y funcionamiento de espejos retrovisores al poner R', note: 'Los espejos deben inclinarse hacia abajo al poner marcha atrás.' },
+      { text: 'Aire acondicionado / calefacción (plazas delanteras y traseras)' },
+      { text: 'Calefacción en todos los asientos', tag: 'model' },
+      { text: 'Comprobar que todos los altavoces funcionan (mover sonido con la interfaz)' },
+      { text: 'Asientos delanteros: se mueven en todas las direcciones posibles' },
+      { text: 'Apertura y cierre del puerto de carga' },
+      { text: 'Apertura y cierre del maletero trasero (eléctrico) y delantero desde pantalla, app y voz', tag: 'model' },
+      { text: '⚠️ IMPORTANTE: Vibración en volante u otras partes del habitáculo al circular. Si se da, comunicar inmediatamente al SC.', tag: 'important', note: 'Se han dado casos en unidades M3H. Abrir incidencia desde la app.' },
+    ]
+  },
+  {
+    id: 'carga',
+    icon: '🔋',
+    color: '#3fc380',
+    title: 'Carga',
+    subtitle: 'Puerto de carga y maletero',
+    items: [
+      { text: 'Puerto de carga: abrir y cerrar la tapa desde pantalla y manualmente' },
+      { text: 'Maletero (Frunk y Trunk): verificar apertura eléctrica y que no haga ruidos extraños' },
+      { text: 'Probar carga con el cable Mennekes incluido' },
+    ]
+  },
+  {
+    id: 'accesorios',
+    icon: '📦',
+    color: '#4a9eff',
+    title: 'Accesorios incluidos',
+    subtitle: 'Verificar que todo esté en el coche',
+    items: [
+      { text: 'Cable Mennekes tipo 2 (azul o negro)' },
+      { text: 'Cargador Mobile Connector con adaptador para Schuko' },
+      { text: 'Kit antipinchazos y bomba de inflar — verificar funcionamiento', note: 'Algunos kits han llegado sin funcionar.' },
+      { text: 'Triángulos y chaleco de alta visibilidad' },
+      { text: 'Mopa para limpiar pantalla del coche', tag: 'model', note: 'En los M3H la han retirado.' },
+      { text: 'Pendrive en guantera para grabaciones del Centinela' },
+      { text: 'Alfombrillas instaladas y limpias' },
+      { text: '2 tarjetas llave físicas' },
+    ]
+  },
+  {
+    id: 'documentacion',
+    icon: '📄',
+    color: '#f5a623',
+    title: 'Documentación e importante',
+    subtitle: 'Trámites y puntos clave post-entrega',
+    items: [
+      { text: 'Hacerse una copia de la documentación provisional del coche para el día de la recogida', note: 'La documentación definitiva llegará a tu domicilio por mensajería.' },
+      { text: 'El coche se entrega sin pegatina medioambiental — verificar en app miDGT', note: 'Normalmente tarda 2-3 días desde la matriculación. Luego acercarse a Correos o establecimiento autorizado.' },
+      { text: 'Instalar app miDGT en el móvil', note: 'Contiene carnet de conducir y documentación del coche. El IVTM (impuesto municipal) hay que llevarlo físicamente.' },
+      { text: 'Determinar si hay que conseguir cita o si pueden arreglarse los fallos en el momento' },
+    ]
+  },
+];
+
+let checkedItems = {};
+let notes = {};
+let activeModel = 'all';
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem('tesla_checklist_v2');
+    if (saved) {
+      const data = JSON.parse(saved);
+      checkedItems = data.checked || {};
+      notes = data.notes || {};
+      activeModel = data.model || 'all';
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('tesla_checklist_v2', JSON.stringify({
+      checked: checkedItems,
+      notes: notes,
+      model: activeModel
+    }));
+  } catch(e) {}
+}
+
+function getItemId(sectionId, itemIdx) {
+  return `${sectionId}_${itemIdx}`;
+}
+
+function getTotalItems() {
+  return SECTIONS.reduce((sum, s) => sum + s.items.length, 0);
+}
+
+function getCheckedCount() {
+  return Object.values(checkedItems).filter(Boolean).length;
+}
+
+function updateProgressUI() {
+  const total = getTotalItems();
+  const checked = getCheckedCount();
+  const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('header-count').querySelector('.count').textContent = checked;
+  document.getElementById('total-count').textContent = total;
+  document.getElementById('pct-label').textContent = pct + '% completado';
+  const remaining = total - checked;
+  document.getElementById('remaining-label').textContent = remaining > 0 ? `${remaining} pendientes` : '✓ Completado';
+
+  document.querySelectorAll('.section-progress-ring').forEach(ring => {
+    const sectionId = ring.dataset.section;
+    const section = SECTIONS.find(s => s.id === sectionId);
+    if (!section) return;
+    const sTotal = section.items.length;
+    const sChecked = section.items.filter((_, i) => checkedItems[getItemId(sectionId, i)]).length;
+    const sPct = sTotal > 0 ? sChecked / sTotal : 0;
+    const circumference = 2 * Math.PI * 12;
+    const offset = circumference * (1 - sPct);
+    ring.querySelector('.ring-fill').style.strokeDashoffset = offset;
+    ring.querySelector('.ring-fill').style.strokeDasharray = circumference;
+    ring.querySelector('.ring-bg').style.strokeDasharray = circumference;
+    ring.querySelector('.ring-text').textContent = `${sChecked}/${sTotal}`;
+  });
+
+  updateSummary(total, checked);
+}
+
+function updateSummary(total, checked) {
+  const el = document.getElementById('summary-checked');
+  const elPending = document.getElementById('summary-pending');
+  const elPct = document.getElementById('summary-pct');
+  if (el) el.textContent = checked;
+  if (elPending) elPending.textContent = total - checked;
+  if (elPct) elPct.textContent = total > 0 ? Math.round(checked/total*100) + '%' : '0%';
+}
+
+function renderSections() {
+  const container = document.getElementById('main-content');
+  container.innerHTML = '';
+
+  SECTIONS.forEach(section => {
+    const div = document.createElement('div');
+    div.className = 'section';
+    div.id = 'section-' + section.id;
+
+    const isOpen = section.id === 'general';
+    const header = document.createElement('div');
+    header.className = 'section-header' + (isOpen ? ' open' : '');
+    header.innerHTML = `
+      <div class="section-icon" style="background:${section.color}22;">${section.icon}</div>
+      <div class="section-info">
+        <div class="section-title">${section.title}</div>
+        <div class="section-subtitle">${section.subtitle}</div>
+      </div>
+      <div class="section-meta">
+        <svg class="section-progress-ring" data-section="${section.id}" viewBox="0 0 32 32">
+          <circle class="ring-bg" cx="16" cy="16" r="12" fill="none" stroke-width="2.5"/>
+          <circle class="ring-fill" cx="16" cy="16" r="12" fill="none" stroke-width="2.5"
+            stroke-linecap="round" transform="rotate(-90 16 16)"
+            style="stroke-dasharray:75.4;stroke-dashoffset:75.4;transition:stroke-dashoffset 0.4s"/>
+          <text class="ring-text" x="16" y="16">0/0</text>
+        </svg>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </div>
+    `;
+
+    const body = document.createElement('div');
+    body.className = 'section-body' + (isOpen ? ' open' : '');
+
+    section.items.forEach((item, idx) => {
+      const itemId = getItemId(section.id, idx);
+      const isChecked = !!checkedItems[itemId];
+
+      const itemEl = document.createElement('div');
+      itemEl.className = 'item' + (isChecked ? ' checked' : '');
+      itemEl.dataset.id = itemId;
+
+      let tagHtml = '';
+      if (item.tag === 'important') tagHtml = '<span class="item-tag tag-important">Importante</span>';
+      else if (item.tag === 'tip') tagHtml = '<span class="item-tag tag-tip">Consejo</span>';
+      else if (item.tag === 'model') tagHtml = '<span class="item-tag tag-model">Según modelo</span>';
+
+      itemEl.innerHTML = `
+        <div class="checkbox">
+          <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+            <path d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <div class="item-content">
+          <div class="item-text">${item.text}${tagHtml}</div>
+          ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+        </div>
+      `;
+
+      itemEl.addEventListener('click', () => toggleItem(itemId, itemEl));
+      body.appendChild(itemEl);
+    });
+
+    const notesArea = document.createElement('div');
+    notesArea.className = 'notes-area';
+    notesArea.innerHTML = `
+      <div class="notes-label">📝 Notas de esta sección</div>
+      <textarea placeholder="Anota defectos, números de ticket, referencias de incidencias…" data-section="${section.id}">${notes[section.id] || ''}</textarea>
+    `;
+    notesArea.querySelector('textarea').addEventListener('input', e => {
+      notes[section.id] = e.target.value;
+      saveState();
+    });
+    body.appendChild(notesArea);
+
+    header.addEventListener('click', () => {
+      const isNowOpen = body.classList.toggle('open');
+      header.classList.toggle('open', isNowOpen);
+    });
+
+    div.appendChild(header);
+    div.appendChild(body);
+    container.appendChild(div);
+  });
+
+  const summary = document.createElement('div');
+  summary.className = 'summary-card';
+  summary.innerHTML = `
+    <div class="summary-title">Resumen de la inspección</div>
+    <div class="summary-grid">
+      <div class="summary-stat">
+        <div class="num num-green" id="summary-checked">0</div>
+        <div class="lbl">Verificados</div>
+      </div>
+      <div class="summary-stat">
+        <div class="num num-amber" id="summary-pending">0</div>
+        <div class="lbl">Pendientes</div>
+      </div>
+      <div class="summary-stat">
+        <div class="num num-red" id="summary-pct">0%</div>
+        <div class="lbl">Completado</div>
+      </div>
+    </div>
+    <div class="action-btns">
+      <button class="btn btn-primary" onclick="exportReport()">📄 Exportar PDF</button>
+      <button class="btn btn-secondary" onclick="expandAll()">📂 Abrir todo</button>
+      <button class="btn btn-ghost" onclick="confirmReset()">🔄 Reiniciar</button>
+    </div>
+  `;
+  container.appendChild(summary);
+}
+
+function toggleItem(itemId, el) {
+  checkedItems[itemId] = !checkedItems[itemId];
+  el.classList.toggle('checked', checkedItems[itemId]);
+  saveState();
+  updateProgressUI();
+  if (checkedItems[itemId]) {
+    showToast('✓ Punto verificado');
+  }
+}
+
+function expandAll() {
+  document.querySelectorAll('.section-body').forEach(b => b.classList.add('open'));
+  document.querySelectorAll('.section-header').forEach(h => h.classList.add('open'));
+}
+
+function confirmReset() {
+  if (confirm('¿Reiniciar todo el checklist? Se perderán todos los checks y notas.')) {
+    checkedItems = {};
+    notes = {};
+    saveState();
+    renderSections();
+    updateProgressUI();
+    showToast('Checklist reiniciado');
+  }
+}
+
+function exportReport() {
+  const total = getTotalItems();
+  const checked = getCheckedCount();
+  const pct = Math.round(checked / total * 100);
+  const now = new Date().toLocaleString('es-ES');
+
+  let html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <title>Informe Tesla - ${now}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; font-size: 11pt; color: #111; background: #fff; padding: 28px 32px; }
+    .pdf-header { display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #e82127; padding-bottom: 14px; margin-bottom: 18px; }
+    .pdf-logo { width: 28px; height: 28px; }
+    .pdf-title { font-family: 'Space Grotesk', sans-serif; font-size: 18pt; font-weight: 700; color: #111; }
+    .pdf-title span { color: #e82127; }
+    .pdf-meta { margin-left: auto; text-align: right; font-size: 9pt; color: #666; line-height: 1.6; }
+    .pdf-summary { display: flex; gap: 10px; margin-bottom: 20px; }
+    .pdf-stat { flex: 1; border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px 14px; text-align: center; }
+    .pdf-stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 20pt; font-weight: 700; }
+    .pdf-stat .lbl { font-size: 8pt; color: #888; margin-top: 2px; }
+    .num-green { color: #2a9d5c; }
+    .num-amber { color: #d4870a; }
+    .num-red { color: #e82127; }
+    .pdf-section { margin-bottom: 16px; break-inside: avoid; }
+    .pdf-section-title { font-family: 'Space Grotesk', sans-serif; font-size: 11pt; font-weight: 700; background: #f4f4f4; padding: 7px 12px; border-radius: 6px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .pdf-item { display: flex; align-items: flex-start; gap: 10px; padding: 5px 10px; border-bottom: 1px solid #f0f0f0; }
+    .pdf-item:last-child { border-bottom: none; }
+    .pdf-box { width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid #ccc; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; }
+    .pdf-box.checked { background: #2a9d5c; border-color: #2a9d5c; }
+    .pdf-check { width: 9px; height: 9px; display: none; }
+    .pdf-box.checked .pdf-check { display: block; }
+    .pdf-item-text { font-size: 10pt; line-height: 1.4; }
+    .pdf-item-text.done { color: #aaa; text-decoration: line-through; }
+    .pdf-item-note { font-size: 8.5pt; color: #999; margin-top: 2px; }
+    .pdf-notes-box { margin-top: 6px; border: 1px dashed #ddd; border-radius: 6px; padding: 8px 12px; font-size: 9.5pt; color: #444; background: #fafafa; }
+    .pdf-notes-label { font-size: 8pt; color: #aaa; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .pdf-footer { margin-top: 24px; border-top: 1px solid #e5e5e5; padding-top: 10px; font-size: 8.5pt; color: #aaa; text-align: center; }
+    .tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 8pt; font-weight: 600; margin-left: 5px; vertical-align: middle; }
+    .tag-i { background: #fde8e8; color: #c0392b; }
+    .tag-m { background: #fef3e2; color: #b7770a; }
+    @media print { body { padding: 0; } }
+  </style></head><body>`;
+
+  html += `<div class="pdf-header">
+    <svg class="pdf-logo" viewBox="0 0 342 512" fill="none"><path d="M0 68.98C56.5 26.47 130.4 0 171 0s114.5 26.47 171 68.98c-34.38 7.5-72.38 11.52-114.5 11.52L171 512 114.5 80.5C72.38 80.5 34.38 76.48 0 68.98zm171 2.04c-27.13 0-53.63-2.04-78.5-5.97 23.25-14.3 50.25-22.6 78.5-22.6s55.25 8.3 78.5 22.6c-24.87 3.93-51.37 5.97-78.5 5.97z" fill="#e82127"/></svg>
+    <div class="pdf-title">Checklist de Entrega <span>Tesla</span></div>
+    <div class="pdf-meta">Generado: ${now}</div>
+  </div>`;
+
+  html += `<div class="pdf-summary">
+    <div class="pdf-stat"><div class="num num-green">${checked}</div><div class="lbl">Verificados</div></div>
+    <div class="pdf-stat"><div class="num num-amber">${total - checked}</div><div class="lbl">Pendientes</div></div>
+    <div class="pdf-stat"><div class="num num-red">${pct}%</div><div class="lbl">Completado</div></div>
+  </div>`;
+
+  SECTIONS.forEach(section => {
+    html += `<div class="pdf-section">
+      <div class="pdf-section-title">${section.icon} ${section.title}</div>`;
+    section.items.forEach((item, idx) => {
+      const id = getItemId(section.id, idx);
+      const done = !!checkedItems[id];
+      let tag = '';
+      if (item.tag === 'important') tag = '<span class="tag tag-i">Importante</span>';
+      else if (item.tag === 'model') tag = '<span class="tag tag-m">Según modelo</span>';
+      html += `<div class="pdf-item">
+        <div class="pdf-box${done ? ' checked' : ''}">
+          <svg class="pdf-check" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div>
+          <div class="pdf-item-text${done ? ' done' : ''}">${item.text}${tag}</div>
+          ${item.note ? `<div class="pdf-item-note">${item.note}</div>` : ''}
+        </div>
+      </div>`;
+    });
+    if (notes[section.id]) {
+      html += `<div class="pdf-notes-box"><div class="pdf-notes-label">📝 Notas</div>${notes[section.id]}</div>`;
+    }
+    html += `</div>`;
+  });
+
+  html += `<div class="pdf-footer">Tesla Delivery Checklist • ${now} • ${checked}/${total} puntos verificados</div>`;
+  html += `</body></html>`;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  win.onload = () => {
+    win.focus();
+    win.print();
+  };
+  showToast('📄 Abriendo PDF…');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+document.getElementById('model-selector').addEventListener('click', e => {
+  const btn = e.target.closest('.model-btn');
+  if (!btn) return;
+  document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeModel = btn.dataset.model;
+  saveState();
+  showToast(`Modelo: ${btn.textContent}`);
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('scroll-top').classList.toggle('visible', window.scrollY > 400);
+});
+
+loadState();
+renderSections();
+updateProgressUI();
+
+if (activeModel !== 'all') {
+  const btn = document.querySelector(`[data-model="${activeModel}"]`);
+  if (btn) {
+    document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+</script>
+</body>
+</html>
